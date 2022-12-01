@@ -6,11 +6,17 @@
 <form method="GET" action="/api/movies">
   <div class="form-group">
     <label for="page">Page Number</label>
-    <input type="number" name="page" placeholder="Enter Page Number">
+    <input type="number" name="page" placeholder="Enter Page Number"><br/>
+    {{#if error}}
+    <a style="color: red; font-size: 11px">{{error.page}}</a>
+    {{/if}}
   </div>
   <div class="form-group">
     <label for="perPage">Content Per page</label>
-    <input type="number" name="perPage" placeholder="Enter Content Per Page">
+    <input type="number" name="perPage" placeholder="Enter Content Per Page"><br/>
+    {{#if error}}
+    <a style="color: red; font-size: 11px">{{error.perpage}}</a>
+    {{/if}}
   </div>
   <div class="form-group">
     <label for="title">Title</label>
