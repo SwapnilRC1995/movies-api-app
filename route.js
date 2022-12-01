@@ -31,7 +31,10 @@ const HBS = exphbs.create({
     //Create custom HELPER
     extname: '.hbs',
     helpers:{
-        
+        dateConvert: function(options){
+            let date = new Date(options.fn.this);
+            return date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
+        }
     }
 });
 
