@@ -34,8 +34,14 @@ const HBS = exphbs.create({
         dateConvert: function(options){
             let date = new Date(options.fn.this);
             return date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
-        }
-    }
+        },
+       change: function(options){
+        if(!options.fn(this) && !options.fn(this).trim())
+            return `<p style='color:red'>No Data</p>`;
+        else
+            return options.fn(this);
+}
+       } 
 });
 
 app.engine('.hbs', HBS.engine)
@@ -110,6 +116,10 @@ async(req, res) => {
     res.status(201).send(result);
 })
 
+app.get('/api/moviesForm', (req, res) => {
+    res.render('movies-form',{});
+});
+
 app.get('/api/movies', 
 init,
 query('page').trim().escape().notEmpty().withMessage('Page number cannot be left blank'),
@@ -125,7 +135,11 @@ async(req, res) => {
     let title = req.query.title || "";
     if(page && page.trim() && perPage && perPage.trim()){
         let movies = await db.getAllMovies(page, perPage, title)
-        res.send(movies);
+        if(req.query.view === "true"){
+            res.render('data', {title: 'Movies', movies: movies});
+        }else{
+            res.send(movies)
+        }
     }else{
 
     }

@@ -1,7 +1,21 @@
+<style>
+    footer{
+        position: fixed;
+    }
+</style>
 <form method="GET" action="/api/movies">
-    Page Number <br><input type="number" name="pageNum" placeholder="Enter Page Number"><br/><br/>
-    Content Per page <br><input type="number" name="perPage" placeholder="Enter Content Per Page"><br/><br/>
-    Title<br><input type="text" name="title" placeholder="Enter Title"><br/><br/>
-    
-    <button type="submit">Enter</button>
+  <div class="form-group">
+    <label for="page">Page Number</label>
+    <input type="number" name="page" placeholder="Enter Page Number">
+  </div>
+  <div class="form-group">
+    <label for="perPage">Content Per page</label>
+    <input type="number" name="perPage" placeholder="Enter Content Per Page">
+  </div>
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input type="text" name="title" placeholder="Enter Title">
+  </div>
+  <input type="hidden" name="view" value="true"/>
+  <button type="submit" class="btn btn-primary">Enter</button>
 </form>

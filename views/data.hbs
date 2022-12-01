@@ -1,34 +1,142 @@
-<table border='1'>
-    <tr>
-        <th>Title</th>
-        <th>Plot</th>
-        <th>Genres</th>
-        <th>Cast</th>
-        <th>Language</th>
-        <th>Released</th>
-        <th>Directors</th>
-        <th>Year</th>
-        <th>Released Date</th>
-        <th colspan="3">Tomatoes</th>
-        <th colspan="3">IMDB</th>
-    </tr>
-    <tr>
-        <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
-        <th>Ratings</th>
-        <th>Number Of Reviews</th>
-        <th>Meter</th>
-        <
-    </tr>
-    {{#each books}}
-   
-    <tr>
-        <td><img src="{{this.img}}"/></td>
-        <td>{{this.title}}</td>
-        <td>{{this.author}}</td>
-        <td>{{this.ISBN}}</td>
-        <td>{{this.category}}</td>
-        <td>{{this.inventory}}</td>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Poster</th>
+            <th>Plot</th>
+            <th>Genres</th>
+            <th>Cast</th>
+            <th>Languages</th>
+            <th>Year</th>
+            <th>Directors</th>
+            <th>Writers</th>
+            <th>Released Date</th>
+            <th>Countries</th>
+            <th>Type</th>
+            <th colspan="2">Awards</th>
+            <th colspan="2">IMDB</th>
+            <th colspan="10">Tomatoes</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Wins</th>
+            <th>Nominations</th>
+            <th>Ratings</th>
+            <th>Votes</th>
+            <th>BoxOffice</th>
+            <th>Fresh</th>
+            <th>Rotten</th>
+            <th>Production</th>
+            <th colspan="3">Viewer's Review</th>
+            <th colspan="3">Critic Review</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Ratings</th>
+            <th>Number Of Reviews</th>
+            <th>Meter</th>
+            <th>Ratings</th>
+            <th>Number Of Reviews</th>
+            <th>Meter</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each movies}}
+            <tr>
+            <td>{{this.title}}</td>
+            <td><img src="{{this.poster}}" /></td>
+            <td>{{this.plot}}</td>
+            <td>
+                <ul>
+                    {{#each genres}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each cast}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each languages}}
+                       <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </td>
+            <td>{{this.year}}</td>
+            <td>
+                <ul>
+                    {{#each directors}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each writers}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </td>
+            <td>{{this.released}}</td>
+            <td>
+                <ul>
+                     {{#each countries}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </td>
+            <td>{{this.type}}</td>
+            <td>{{this.awards.wins}}</td>
+            <td>{{this.awards.nominations}}</td>
+            <td>{{this.imdb.rating}}</td>
+            <td>{{this.imdb.votes}}</td>
+            <td>{{#change}}{{this.tomatoes.boxOffice}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.fresh}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.rotten}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.production}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.viewer.rating}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.viewer.numReviews}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.viewer.meter}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.critic.rating}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.critic.numReviews}}{{/change}}</td>
+            <td>{{#change}}{{this.tomatoes.critic.numReviews}}{{/change}}</td>
+        </tr>
         
-    </tr>
-    {{/each}}
+        {{/each}}
+    </tbody>
 </table>
