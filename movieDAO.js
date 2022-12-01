@@ -11,7 +11,7 @@ const initialize = (connectionUrl, res, next) => {
     })
 }
 
-const addNewMovie = async(data) => {
+const addNewMovie = async (data) => {
     let result;
     await Movie.create(data).then((movie) => {
         result = movie;
@@ -22,32 +22,30 @@ const addNewMovie = async(data) => {
     return result;
 }
 
-const getAllMovies = async(page, perPage, title) => {
+const getAllMovies = async (page, perPage, title) => {
     let result = [];
-    if(title && title.trim()){
-        await Movie.findOne({title: title}).skip(perPage *(page - 1)).limit(perPage).lean().exec().then((movie) => {
-            if(movie){
-                result.push(movie)
+    await Movie.find().sort({ "_id": 1 }).skip(perPage * (page - 1)).limit(perPage).lean().exec().then((movies) => {
+        if (title && title.trim()) {
+            movies.forEach((movie) => {
+                if(movie.title === title){
+                    result.push(movie);
+                }
+            })
+        }else{
+            if (movies.length > 0) {
+                result = movies;
             }
-        }).catch((err) => {
-            result = err;
-        })
-    }else{
-        await Movie.find().sort({"_id": 1}).skip(perPage *(page - 1)).limit(perPage).lean().exec().then((movies) => {
-            if(movies.length > 0){
-                result.push(movies)
-            }
-        }).catch((err) => {
-            result = err;
-        })
-    }
+        }
+    }).catch((err) => {
+        result = err;
+    })
     return result;
 }
 
-const getMovieById = async(id) => {
+const getMovieById = async (id) => {
     let result = []
     await Movie.findById(id).lean().exec().then((movie) => {
-        if(movie){
+        if (movie) {
             result.push(movie);
         }
     }).catch((err) => {
@@ -56,7 +54,7 @@ const getMovieById = async(id) => {
     return result;
 }
 
-const updateMovieById = async(data, id) => {
+const updateMovieById = async (data, id) => {
     let result;
     await Movie.findByIdAndUpdate(id, data).exec().then((movie) => {
         result = getMovieById(movie._id);
@@ -67,11 +65,11 @@ const updateMovieById = async(data, id) => {
     return result;
 }
 
-const deleteMovieById = async(id) => {
+const deleteMovieById = async (id) => {
     let res = false;
-    await Movie.findById(id).exec().then(async(movie) => {
-        await Movie.deleteOne({"_id": id}).exec().then((result) => {
-            if(result.deletedCount != 0)
+    await Movie.findById(id).exec().then(async (movie) => {
+        await Movie.deleteOne({ "_id": id }).exec().then((result) => {
+            if (result.deletedCount != 0)
                 res = true;
         })
     })
