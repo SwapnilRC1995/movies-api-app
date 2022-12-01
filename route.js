@@ -107,7 +107,16 @@ async(req, res) => {
     res.status(201).send(result);
 })
 
-app.get('/api/movies', init, async(req, res) => {
+app.get('/api/movies', 
+init,
+query('page').trim().escape().notEmpty().withMessage('Page number cannot be left blank'),
+query('perPage').trim().escape().notEmpty().withMessage('Movies per page cannot be left blank'),
+query('title').trim().escape().optional().default(""),
+async(req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send({ errors: errors.array() });
+    }
     let page = req.query.page;
     let perPage = req.query.perPage;
     let title = req.query.title || "";
