@@ -3,6 +3,9 @@ const { body, query, validationResult } = require('express-validator');
 const path = require('path');
 const fs = require('fs');
 
+const jwt = require('jsonwebtoken')
+const session = require('express-session')
+
 require('dotenv').config();
 
 // Create router
@@ -19,13 +22,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 const cors = require('cors');
 app.use(cors());
 
+app.use(session({
+    secret: "spooky secret",
+    resave: true,
+    saveUninitialized: false,
+    authenticated: false,
+    user: undefined
+}))
+app.use(function (req, res, next) {
+    res.locals.session = req.session;
+    next();
+});
 
 const db = require('./movieDAO.js');
+const userDB = require('./userDAO.js');
+
 const init = (req, res, next) => {
     db.initialize(process.env.CONNECTION_STRING, res, next);
 }
 
+const userInit = (req, res, next) => {
+    userDB.initialize(process.env.CONNECTION_STRING, res, next);
+}
+
 const exphbs = require('express-handlebars');
+const { decode } = require('querystring');
 
 const HBS = exphbs.create({
     //Create custom HELPER
@@ -51,6 +72,87 @@ app.set('view engine', 'hbs');
 
 
 // Configuring routes
+app.get('/api/moviesForm', (req, res) => {
+    if (req.session.authenticated && req.session.user !== undefined) {
+        res.render('movies-form', {});
+    } else {
+        res.redirect('/api/movies/login');
+    }
+});
+
+app.get('/api/movies/register', (req, res) => {
+    if(req.session.authenticated && req.session.user !== undefined){
+        res.redirect('/api/moviesForm');
+    }else{
+        res.render('register', {});
+    }
+})
+
+app.get('/api/movies/login', (req, res) => {
+    if(req.session.authenticated && req.session.user !== undefined){
+        res.redirect('/api/moviesForm');
+    }else{
+        res.render('login', {});
+    }
+})
+
+app.post('/api/movies/register', userInit, async (req, res) => {
+    let name = req.body.name;
+    let email = req.body.email;
+    let password = req.body.password;
+    let confirmPassword = req.body['confirm-password'];
+
+    if (password === confirmPassword) {
+
+        const data = {
+            name,
+            email,
+            password,
+        }
+        const accessToken = jwt.sign(data, process.env.SECRETKEY);
+
+        let user = await userDB.addNewUser({
+            name,
+            email,
+            password: accessToken
+        })
+        req.session.authenticated = true;
+        req.session.user = user;
+        res.redirect('/api/moviesForm');
+    }
+
+
+})
+
+app.post('/api/movies/login', userInit, async (req, res) => {
+    let email = req.body.email;
+    let password = req.body.password;
+    let user = await userDB.getUserByEmail(email);
+    if (user) {
+        jwt.verify(user.password, process.env.SECRETKEY, (err, decoded) => {
+            if (err)
+                res.sendStatus(403)
+            else {
+                if (password === decoded.password) {
+                    req.session.authenticated = true;
+                    req.session.user = user;
+                    res.redirect('/api/moviesForm')
+                } else {
+                    res.redirect('/api/movies/login')
+                }
+            }
+        })
+    } else {
+        res.redirect('/api/movies/register')
+    }
+})
+
+app.get('/api/movies/sign-out', (req, res) => {
+    req.session.authenticated = false;
+    req.session.user = undefined;
+    res.redirect('/api/movies/login');
+})
+
 app.post('/api/movies',
     init,
     body('title').trim().escape().notEmpty().withMessage('Field cannot be empty'),
@@ -116,10 +218,6 @@ app.post('/api/movies',
         res.status(201).send(result);
     })
 
-app.get('/api/moviesForm', (req, res) => {
-    res.render('movies-form', {});
-});
-
 app.get('/api/movies',
     init,
     query('page').trim().escape().notEmpty().withMessage('Page number cannot be left blank'),
@@ -128,21 +226,21 @@ app.get('/api/movies',
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            if(req.query.view === "true"){
+            if (req.query.view === "true") {
                 let e = {};
                 console.log(errors.errors)
                 errors.errors.forEach((err) => {
-                    if(err.param === "page"){
+                    if (err.param === "page") {
                         e.page = err.msg;
-                    }else{
+                    } else {
                         e.perpage = err.msg;
                     }
                 })
                 res.render('movies-form', { error: e })
-            }else{
+            } else {
                 return res.status(400).send({ errors: errors.array() });
             }
-         }
+        }
         // if(req.query.view === "true"&& page==null || page===undefined || page==="" &&
         //  // page.trim() ==null || page.trim() === undefined || page.trim()==="" && 
         //   perPage == null|| perPage ===undefined || perPage==="" ){

@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>{{title}}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheet/style.css' />
 </head>
+
 <body>
-    <header>
-        <p>Movies</p>
+    <header class="navbar navbar-expand-lg text-white">
+        <a class="navbar-brand">The Movie App</a>
+        <ul class="navbar-nav mr-auto">
+            {{#if session.authenticated}}
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/api/movies/sign-out">Sign out</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/api/movies/register">Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="/api/movies/login">Login</a>
+            </li>
+            {{/if}}
+        </ul>
     </header>
-    <div class="body-container">
+    <div class="{{#if movies}}body-container{{else}}container{{/if}} mt-5">
         {{{body}}}
     </div>
     <footer>
         <p>&#169;2022 Swapnil Roy Chowdhury | Sayani Pal</p>
     </footer>
 </body>
+
 </html>

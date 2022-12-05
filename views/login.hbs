@@ -1,0 +1,17 @@
+<style>
+    footer {
+        position: fixed;
+    }
+</style>
+<h3 class="mb-5">Login</h3>
+<form action="/api/movies/login" method="post">
+    <div class="form-group">
+        <label for="email">Email: </label>
+        <input type="text" name="email" placeholder="Enter email" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="password">Password: </label>
+        <input type="password" name="password" placeholder="Enter password" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>

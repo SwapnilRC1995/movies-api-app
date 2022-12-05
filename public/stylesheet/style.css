@@ -5,12 +5,12 @@ body {
   overflow-x: hidden;
 }
 header {
-  padding: 2%;
+  padding: 1.5% !important;
   padding-left: 50px;
   width: 100%;
   background: blueviolet;
   color: white;
-  font-size: 30px;
+  font-size: 18px;
 }
 .body-container{
   padding: 60px;
@@ -29,6 +29,9 @@ footer {
   color: white;
   text-align: center;
   padding: 1%;
+}
+ul{
+  padding: 0;
 }
 li{
   list-style: none;
