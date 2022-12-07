@@ -81,20 +81,21 @@ app.get('/api/moviesForm', (req, res) => {
 });
 
 app.get('/api/movies/register', (req, res) => {
-    if(req.session.authenticated && req.session.user !== undefined){
+    if (req.session.authenticated && req.session.user !== undefined) {
         res.redirect('/api/moviesForm');
-    }else{
+    } else {
         res.render('register', {});
     }
 })
 
 app.get('/api/movies/login', (req, res) => {
-    if(req.session.authenticated && req.session.user !== undefined){
+    if (req.session.authenticated && req.session.user !== undefined) {
         res.redirect('/api/moviesForm');
-    }else{
+    } else {
         res.render('login', {});
     }
 })
+
 
 app.post('/api/movies/register', userInit, async (req, res) => {
     let name = req.body.name;
@@ -119,6 +120,8 @@ app.post('/api/movies/register', userInit, async (req, res) => {
         req.session.authenticated = true;
         req.session.user = user;
         res.redirect('/api/moviesForm');
+    } else {
+        res.render('register', { error: "Pasword does not match" })
     }
 
 
@@ -138,7 +141,7 @@ app.post('/api/movies/login', userInit, async (req, res) => {
                     req.session.user = user;
                     res.redirect('/api/moviesForm')
                 } else {
-                    res.redirect('/api/movies/login')
+                    res.render('login', { error: "Wrong password" })
                 }
             }
         })

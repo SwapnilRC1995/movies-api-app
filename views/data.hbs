@@ -72,28 +72,28 @@
     </thead>
     <tbody>
         {{#each movies}}
-            <tr>
+        <tr>
             <td>{{this.title}}</td>
             <td><img src="{{this.poster}}" /></td>
             <td>{{this.plot}}</td>
             <td>
                 <ul>
                     {{#each genres}}
-                        <li>{{this}}</li>
+                    <li>{{this}}</li>
                     {{/each}}
                 </ul>
             </td>
             <td>
                 <ul>
                     {{#each cast}}
-                        <li>{{this}}</li>
+                    <li>{{this}}</li>
                     {{/each}}
                 </ul>
             </td>
             <td>
                 <ul>
                     {{#each languages}}
-                       <li>{{this}}</li>
+                    <li>{{this}}</li>
                     {{/each}}
                 </ul>
             </td>
@@ -101,22 +101,22 @@
             <td>
                 <ul>
                     {{#each directors}}
-                        <li>{{this}}</li>
+                    <li>{{this}}</li>
                     {{/each}}
                 </ul>
             </td>
             <td>
                 <ul>
                     {{#each writers}}
-                        <li>{{this}}</li>
+                    <li>{{this}}</li>
                     {{/each}}
                 </ul>
             </td>
             <td>{{this.released}}</td>
             <td>
                 <ul>
-                     {{#each countries}}
-                        <li>{{this}}</li>
+                    {{#each countries}}
+                    <li>{{this}}</li>
                     {{/each}}
                 </ul>
             </td>
@@ -136,7 +136,7 @@
             <td>{{#change}}{{this.tomatoes.critic.numReviews}}{{/change}}</td>
             <td>{{#change}}{{this.tomatoes.critic.numReviews}}{{/change}}</td>
         </tr>
-        
+
         {{/each}}
     </tbody>
 </table>

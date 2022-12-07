@@ -3,23 +3,64 @@
         position: fixed;
     }
 </style>
+<script>
+    $(document).ready(function () {
+        $('#login-btn').on('click', (event) => {
+            event.preventDefault();
+            let valid = true;
+            if ($("#name").val().trim() === null || $("#name").val().trim() === undefined || $("#name").val().trim() === "") {
+                valid = false;
+                $('#name-error').text('Name cannot be blank');
+            }
+            if ($("#email").val().trim() === null || $("#email").val().trim() === undefined || $("#email").val().trim() === "") {
+                valid = false;
+                $('#email-error').text('Email cannot be blank');
+            }
+
+            if ($("#password").val().trim() === null || $("#password").val().trim() === undefined || $("#password").val().trim() === "") {
+                valid = false;
+                $('#password-error').text('Password cannot be blank');
+            }
+            if ($("#confirm-password").val().trim() === null || $("#confirm-password").val().trim() === undefined || $("#confirm-password").val().trim() === "") {
+                valid = false;
+                $('#confirm-error').text('Please Confirm your password');
+            }
+            if (valid) {
+                console.log("inside submit")
+                $('#register-form').submit();
+            }
+        })
+        $('input').keyup(() => {
+            $('#name-error').text('');
+            $('#email-error').text('');
+            $('#password-error').text('');
+            $('#confirm-error').text('');
+        })
+    })
+
+</script>
 <h3 class="mb-5">Register</h3>
-<form action="/api/movies/register" method="post">
+<form action="/api/movies/register" method="post" id="register-form">
     <div class="form-group">
         <label for="name">Name: </label>
-        <input type="text" name="name" placeholder="Enter name" class="form-control">
+        <input type="text" id="name" name="name" placeholder="Enter name" class="form-control">
+        <a style="color: red; font-size: 13px" id="name-error"></a>
     </div>
     <div class="form-group">
         <label for="email">Email: </label>
-        <input type="text" name="email" placeholder="Enter email" class="form-control">
+        <input type="text" id="email" name="email" placeholder="Enter email" class="form-control">
+        <a style="color: red; font-size: 13px" id="email-error"></a>
     </div>
     <div class="form-group">
         <label for="password">Password: </label>
-        <input type="password" name="password" placeholder="Enter password" class="form-control">
+        <input type="password" id="password" name="password" placeholder="Enter password" class="form-control">
+        <a style="color: red; font-size: 13px" id="password-error"></a>
     </div>
     <div class="form-group">
         <label for="confirm-password">Confirm password: </label>
-        <input type="password" name="confirm-password" placeholder="Confirm password" class="form-control">
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm password"
+            class="form-control">
+        <a style="color: red; font-size: 13px" id="confirm-error">{{error}}</a>
     </div>
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button id="login-btn" class="btn btn-primary">Register</button>
 </form>

@@ -3,15 +3,45 @@
         position: fixed;
     }
 </style>
+<script>
+    $(document).ready(function () {
+        $('#login-btn').on('click', (event) => {
+            event.preventDefault();
+            let valid = true;
+            if ($("#email").val().trim() === null || $("#email").val().trim() === undefined || $("#email").val().trim() === "") {
+                valid = false;
+                $('#email-error').text('Email cannot be blank');
+            }
+
+            if ($("#password").val().trim() === null || $("#password").val().trim() === undefined || $("#password").val().trim() === "") {
+                valid = false;
+                $('#password-error').text('Password cannot be blank');
+            }
+            if (valid) {
+                console.log("inside submit")
+                $('#login-form').submit();
+            }
+        })
+        $('input').keyup(() => {
+            $('#email-error').text('');
+            $('#password-error').text('');
+        })
+    })
+
+</script>
 <h3 class="mb-5">Login</h3>
-<form action="/api/movies/login" method="post">
+<form action="/api/movies/login" method="post" id="login-form">
     <div class="form-group">
         <label for="email">Email: </label>
-        <input type="text" name="email" placeholder="Enter email" class="form-control">
+        <input type="text" name="email" id="email" placeholder="Enter email" class="form-control">
+        <a style="color: red; font-size: 13px" id="email-error"></a>
     </div>
     <div class="form-group">
         <label for="password">Password: </label>
-        <input type="password" name="password" placeholder="Enter password" class="form-control">
+        <input type="password" name="password" id="password" placeholder="Enter password" class="form-control">
+        {{!-- {{#if error}} --}}
+        <a style="color: red; font-size: 13px" id="password-error">{{error}}</a>
+        {{!-- {{/if}} --}}
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button id="login-btn" class="btn btn-primary">Login</button>
 </form>

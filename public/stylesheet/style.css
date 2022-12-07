@@ -4,6 +4,7 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   overflow-x: hidden;
 }
+
 header {
   padding: 1.5% !important;
   padding-left: 50px;
@@ -12,15 +13,19 @@ header {
   color: white;
   font-size: 18px;
 }
-.body-container{
+
+.body-container {
   padding: 60px;
 }
+
 img {
   width: 100%;
 }
-.oos{
+
+.oos {
   background: red;
 }
+
 footer {
   left: 0;
   bottom: 0;
@@ -30,13 +35,16 @@ footer {
   text-align: center;
   padding: 1%;
 }
-ul{
+
+ul {
   padding: 0;
 }
-li{
+
+li {
   list-style: none;
 }
-table{
-    display: block;
-    overflow-x: auto;
+
+table {
+  display: block;
+  overflow-x: auto;
 }
