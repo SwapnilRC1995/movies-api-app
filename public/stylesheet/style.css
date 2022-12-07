@@ -9,13 +9,13 @@ header {
   padding: 1.5% !important;
   padding-left: 50px;
   width: 100%;
-  background: blueviolet;
+  background: rgb(232, 67, 17);
   color: white;
   font-size: 18px;
 }
 
 .body-container {
-  padding: 60px;
+  padding: 60px;  
 }
 
 img {
@@ -30,7 +30,7 @@ footer {
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: blueviolet;
+  background-color: rgb(232, 67, 17);
   color: white;
   text-align: center;
   padding: 1%;
