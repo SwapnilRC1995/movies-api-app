@@ -46,7 +46,6 @@ const userInit = (req, res, next) => {
 }
 
 const exphbs = require('express-handlebars');
-const { decode } = require('querystring');
 
 const HBS = exphbs.create({
     //Create custom HELPER
