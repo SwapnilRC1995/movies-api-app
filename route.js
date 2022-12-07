@@ -78,12 +78,17 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/moviesForm', userInit, async (req, res) => {
-    if(req.query.apiKey && req.query.apiKey.trim() !== ""){
+    if (req.query.apiKey && req.query.apiKey.trim() !== "") {
         let user = await userDB.getUserByApiKey(req.query.apiKey);
-        req.session.authenticated = true;
-        req.session.user = user;
-        res.render('movies-form', {});
-    }else{
+        if (user) {
+            req.session.authenticated = true;
+            req.session.user = user;
+            res.render('movies-form', {});
+        }else{
+            res.redirect('/api/movies/login');
+        }
+
+    } else {
         if (req.session.authenticated && req.session.user !== undefined) {
             res.render('movies-form', {});
         } else {
