@@ -72,6 +72,10 @@ app.set('view engine', 'hbs');
 
 
 // Configuring routes
+app.get('/', (req, res) => {
+    res.redirect('/api/movies/register');
+})
+
 app.get('/api/moviesForm', (req, res) => {
     if (req.session.authenticated && req.session.user !== undefined) {
         res.render('movies-form', {});
