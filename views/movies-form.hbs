@@ -3,7 +3,8 @@
     position: fixed;
   }
 </style>
-<h3 class="mb-5">Welcome, {{session.user.name}}</h3>
+<h3 class="mb-2">Welcome, {{session.user.name}}</h3>
+<p class="mb-5">Your api key is: {{session.user.apiKey}}</p>
 <form method="get" action="/api/movies">
   <div class="form-group">
     <label for="page">Page Number</label>
@@ -24,5 +25,6 @@
     <input type="text" name="title" placeholder="Enter Title" class="form-control">
   </div>
   <input type="hidden" name="view" value="true" />
+  <input type="hidden" name="apiKey" value="{{session.user.apiKey}}" />
   <button type="submit" class="btn btn-primary">Enter</button>
 </form>

@@ -6,6 +6,8 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken')
 const session = require('express-session')
 
+var uuid4 = require('uuid4');
+
 require('dotenv').config();
 
 // Create router
@@ -75,11 +77,18 @@ app.get('/', (req, res) => {
     res.redirect('/api/movies/register');
 })
 
-app.get('/api/moviesForm', (req, res) => {
-    if (req.session.authenticated && req.session.user !== undefined) {
+app.get('/api/moviesForm', userInit, async (req, res) => {
+    if(req.query.apiKey && req.query.apiKey.trim() !== ""){
+        let user = await userDB.getUserByApiKey(req.query.apiKey);
+        req.session.authenticated = true;
+        req.session.user = user;
         res.render('movies-form', {});
-    } else {
-        res.redirect('/api/movies/login');
+    }else{
+        if (req.session.authenticated && req.session.user !== undefined) {
+            res.render('movies-form', {});
+        } else {
+            res.redirect('/api/movies/login');
+        }
     }
 });
 
@@ -114,11 +123,12 @@ app.post('/api/movies/register', userInit, async (req, res) => {
             password,
         }
         const accessToken = jwt.sign(data, process.env.SECRETKEY);
-
+        let apiKey = uuid4();
         let user = await userDB.addNewUser({
             name,
             email,
-            password: accessToken
+            password: accessToken,
+            apiKey
         })
         req.session.authenticated = true;
         req.session.user = user;
@@ -161,6 +171,8 @@ app.get('/api/movies/sign-out', (req, res) => {
 
 app.post('/api/movies',
     init,
+    userInit,
+    query('apiKey').trim().escape().notEmpty().withMessage('Cannot process request without api key'),
     body('title').trim().escape().notEmpty().withMessage('Field cannot be empty'),
     body('plot').trim().escape().optional().default(""),
     body('genres').trim().escape().optional().default(""),
@@ -189,6 +201,20 @@ app.post('/api/movies',
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({ errors: errors.array() });
+        }
+        let apiKey = req.query.apiKey;
+        let user = await userDB.getUserByApiKey(apiKey);
+        if (!user) {
+            return res.status(400).send({
+                errors: [
+                    {
+                        "value": "",
+                        "msg": "Api key doesn't exist",
+                        "param": "apiKey",
+                        "location": "query"
+                    }
+                ]
+            });
         }
         let data = {
             title: req.body.title.trim(),
@@ -226,6 +252,8 @@ app.post('/api/movies',
 
 app.get('/api/movies',
     init,
+    userInit,
+    query('apiKey').trim().escape().notEmpty().withMessage('Cannot process request without api key'),
     query('page').trim().escape().notEmpty().withMessage('Page number cannot be left blank'),
     query('perPage').trim().escape().notEmpty().withMessage('Movies per page cannot be left blank'),
     query('title').trim().escape().optional().default(""),
@@ -234,7 +262,6 @@ app.get('/api/movies',
         if (!errors.isEmpty()) {
             if (req.query.view === "true") {
                 let e = {};
-                console.log(errors.errors)
                 errors.errors.forEach((err) => {
                     if (err.param === "page") {
                         e.page = err.msg;
@@ -247,10 +274,20 @@ app.get('/api/movies',
                 return res.status(400).send({ errors: errors.array() });
             }
         }
-        // if(req.query.view === "true"&& page==null || page===undefined || page==="" &&
-        //  // page.trim() ==null || page.trim() === undefined || page.trim()==="" && 
-        //   perPage == null|| perPage ===undefined || perPage==="" ){
-        //   //perPage.trim()==null ||perPage.trim()===undefined || perPage.trim()===""  ) {
+        let apiKey = req.query.apiKey;
+        let user = await userDB.getUserByApiKey(apiKey);
+        if (!user) {
+            return res.status(400).send({
+                errors: [
+                    {
+                        "value": "",
+                        "msg": "Api key doesn't exist",
+                        "param": "apiKey",
+                        "location": "query"
+                    }
+                ]
+            });
+        }
         let page = req.query.page;
         let perPage = req.query.perPage;
         let title = req.query.title || "";
@@ -264,18 +301,42 @@ app.get('/api/movies',
         }
     })
 
-app.get('/api/movies/:movie_id', init, async (req, res) => {
-    let id = req.params.movie_id;
-    if (id && id.trim()) {
-        let movie = await db.getMovieById(id);
-        res.send(movie);
-    } else {
+app.get('/api/movies/:movie_id',
+    init,
+    userInit,
+    query('apiKey').trim().escape().notEmpty().withMessage('Cannot process request without api key'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).send({ errors: errors.array() });
+        }
+        let apiKey = req.query.apiKey;
+        let user = await userDB.getUserByApiKey(apiKey);
+        if (!user) {
+            return res.status(400).send({
+                errors: [
+                    {
+                        "value": "",
+                        "msg": "Api key doesn't exist",
+                        "param": "apiKey",
+                        "location": "query"
+                    }
+                ]
+            });
+        }
+        let id = req.params.movie_id;
+        if (id && id.trim()) {
+            let movie = await db.getMovieById(id);
+            res.send(movie);
+        } else {
 
-    }
-})
+        }
+    })
 
 app.put('/api/movies/:movie_id',
     init,
+    userInit,
+    query('apiKey').trim().escape().notEmpty().withMessage('Cannot process request without api key'),
     body('title').trim().escape().notEmpty().withMessage('Field cannot be empty'),
     body('plot').trim().escape().optional().default(""),
     body('genres').trim().escape().optional().default(""),
@@ -304,6 +365,20 @@ app.put('/api/movies/:movie_id',
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({ errors: errors.array() });
+        }
+        let apiKey = req.query.apiKey;
+        let user = await userDB.getUserByApiKey(apiKey);
+        if (!user) {
+            return res.status(400).send({
+                errors: [
+                    {
+                        "value": "",
+                        "msg": "Api key doesn't exist",
+                        "param": "apiKey",
+                        "location": "query"
+                    }
+                ]
+            });
         }
         let id = req.params.movie_id;
         if (id && id.trim()) {
@@ -343,15 +418,37 @@ app.put('/api/movies/:movie_id',
 
     })
 
-app.delete('/api/movies/:movie_id', init, async (req, res) => {
-    let id = req.params.movie_id;
-    if (id && id.trim()) {
-        let movie = await db.deleteMovieById(id);
-        res.status(202).send(movie);
-    } else {
+app.delete('/api/movies/:movie_id',
+    init,
+    userInit,
+    query('apiKey').trim().escape().notEmpty().withMessage('Cannot process request without api key'),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).send({ errors: errors.array() });
+        }
+        let apiKey = req.query.apiKey;
+        let user = await userDB.getUserByApiKey(apiKey);
+        if (!user) {
+            return res.status(400).send({
+                errors: [
+                    {
+                        "value": "",
+                        "msg": "Api key doesn't exist",
+                        "param": "apiKey",
+                        "location": "query"
+                    }
+                ]
+            });
+        }
+        let id = req.params.movie_id;
+        if (id && id.trim()) {
+            let movie = await db.deleteMovieById(id);
+            res.status(202).send(movie);
+        } else {
 
-    }
-})
+        }
+    })
 
 app.all('*', (req, res) => {
     res.status(404).send({
@@ -371,5 +468,6 @@ const splitMultipleFields = (entries) => {
     }
 
 }
+
 // Export router
 module.exports = app;

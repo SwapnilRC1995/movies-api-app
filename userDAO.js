@@ -32,8 +32,19 @@ const getUserByEmail = async (email) => {
     return result[0];
 }
 
+const getUserByApiKey = async (key) => {
+    let result = [];
+    await User.find({"apiKey" : key}).lean().exec().then((user) => {
+        if(user.length > 0 ){
+            result = user
+        }
+    })
+    return result[0];
+}
+
 module.exports = {
     initialize,
     addNewUser,
-    getUserByEmail
+    getUserByEmail,
+    getUserByApiKey
 };
