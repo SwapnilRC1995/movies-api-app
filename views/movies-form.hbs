@@ -3,6 +3,14 @@
     position: fixed;
   }
 </style>
+<script>
+  $(document).ready(function () {
+    $('input').keyup(() => {
+      $('.error').text('');
+    })
+  })
+
+</script>
 <h3 class="mb-2">Welcome, {{session.user.name}}</h3>
 <p class="mb-5">Your api key is: {{session.user.apiKey}}</p>
 <form method="get" action="/api/movies">
@@ -10,14 +18,14 @@
     <label for="page">Page Number</label>
     <input type="number" name="page" placeholder="Enter Page Number" class="form-control">
     {{#if error}}
-    <a style="color: red; font-size: 13px">{{error.page}}</a>
+    <a style="color: red; font-size: 13px" class="error">{{error.page}}</a>
     {{/if}}
   </div>
   <div class="form-group">
     <label for="perPage">Content Per page</label>
     <input type="number" name="perPage" placeholder="Enter Content Per Page" class="form-control">
     {{#if error}}
-    <a style="color: red; font-size: 13px">{{error.perpage}}</a>
+    <a style="color: red; font-size: 13px" class="error">{{error.perpage}}</a>
     {{/if}}
   </div>
   <div class="form-group">
@@ -26,5 +34,5 @@
   </div>
   <input type="hidden" name="view" value="true" />
   <input type="hidden" name="apiKey" value="{{session.user.apiKey}}" />
-  <button type="submit" class="btn btn-primary">Enter</button>
+  <button type="submit" class="btn btn-primary find-btn">Find</button>
 </form>
